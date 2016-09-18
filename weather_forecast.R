@@ -11,8 +11,8 @@ library(stlplus)
 
 # daily data
 # tibbles
-daily_1997_2015 <- read_csv('munich_1997_2015.csv')
-daily_2016 <- read_csv('munich_2016.csv')
+daily_1997_2015 <- read_csv('data/munich_1997_2015.csv')
+daily_2016 <- read_csv('data/munich_2016.csv')
 
 ggplot(daily_1997_2015, aes(day, mean_temp)) + geom_point() + xlab("") + ylab("temperature (daily average)") +
   scale_x_date(labels=date_format("%b %y")) + stat_smooth()

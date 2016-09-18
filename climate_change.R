@@ -8,7 +8,7 @@ library(forecast)
 library(stlplus)
 library(tseries)
 
-df <- read_csv('GlobalLandTemperaturesByCity.csv')
+df <- read_csv('data/GlobalLandTemperaturesByCity.csv')
 df <- rename(df, avg_temp = AverageTemperature, avg_temp_95p = AverageTemperatureUncertainty,
              city = City, country = Country, lat = Latitude, long = Longitude)
 df

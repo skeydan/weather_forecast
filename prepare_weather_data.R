@@ -143,7 +143,7 @@ munich_1997_2016 <-  rbind(munich_1997_2015, munich_2016)
 nrow(munich_1997_2016)
 distinct(munich_1997_2016, day)
 
-write_csv(munich_1997_2015, 'munich_1997_2015.csv')
-write_csv(munich_2016, 'munich_2016.csv')
-write_csv(munich_1997_2016, 'munich_1997_2016.csv')
+write_csv(munich_1997_2015, 'data/munich_1997_2015.csv')
+write_csv(munich_2016, 'data/munich_2016.csv')
+write_csv(munich_1997_2016, 'data/munich_1997_2016.csv')
 
