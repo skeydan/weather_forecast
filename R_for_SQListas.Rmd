@@ -1,0 +1,165 @@
+---
+title: "R for SQListas"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word 
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(lubridate)
+library(ggthemes)
+df <- read_csv('data/GlobalLandTemperaturesByCity.csv')
+```
+
+```{r}
+head(df)
+``` 
+
+rename
+
+```{r}
+df <- rename(df, avg_temp = AverageTemperature, avg_temp_95p = AverageTemperatureUncertainty,
+             city = City, country = Country, lat = Latitude, long = Longitude)
+head(df)
+```
+
+distinct
+
+```{r}
+distinct(df, country)
+distinct(df, city)
+```
+
+where
+
+```{r}
+filter(df, city == 'Munich')
+```
+
+
+```{r}
+# AND
+filter(df, city == 'Munich', year(dt) > 2000)
+# OR
+filter(df, city == 'Munich' | year(dt) > 2000)
+```
+
+select
+
+```{r}
+select(filter(df, city == 'Munich'), avg_temp, avg_temp_95p)
+```
+
+order by
+
+```{r}
+arrange(select(filter(df, city == 'Munich'), dt, avg_temp), avg_temp)
+```
+
+```{r}
+df %>% filter(city == 'Munich') %>% select(dt, avg_temp) %>% arrange(avg_temp)
+```
+
+group by
+
+```{r}
+df %>% group_by(country) %>% summarise(count=n()) %>% arrange(count %>% desc())
+```
+
+```{r}
+df %>% group_by(country) %>% summarise(count=n()) %>% arrange(count)
+```
+
+
+```{r}
+df %>% filter(country == 'Germany', !is.na(avg_temp), year(dt) > 1949) %>% group_by(month(dt)) %>% summarise(count = n(), avg = mean(avg_temp), min = min(avg_temp), max = max(avg_temp))
+```
+
+join
+
+```{r}
+daily_1997_2015 <- read_csv('data/munich_1997_2015.csv')
+monthly_1997_2015 <- daily_1997_2015 %>% group_by(month = floor_date(daily_1997_2015$day, "month")) %>% summarise(mean_temp = mean(mean_temp))
+monthly_1997_2015
+```
+
+```{r}
+df_1949 <- df %>% select(dt, avg_temp) %>% filter(year(dt) > 1949)
+df_1949 %>% inner_join(monthly_1997_2015, by = c("dt" = "month"))
+```
+
+union
+
+```{r}
+daily_2016 <- read_csv('data/munich_2016.csv')
+daily_1997_2015 %>% dplyr::union(daily_2016) %>% arrange(day)
+```
+
+window functions
+
+```{r}
+ filter(daily_2016, cume_dist(desc(mean_temp)) < 0.05) %>% select(day, mean_temp)
+```
+
+```{r}
+ filter(daily_2016, dense_rank(mean_temp) < 4) %>% select(day, mean_temp) %>% arrange(mean_temp)
+```
+
+
+```{r}
+daily_2016 %>% mutate(yesterday_temp = lag(mean_temp)) %>% filter(abs(yesterday_temp - mean_temp) > 5) %>% select(day, mean_temp, yesterday_temp)
+```
+
+```{r}
+daily_2016 %>% mutate(cum_mean_temp = cummean(mean_temp)) %>% select(day, mean_temp, cum_mean_temp)
+```
+
+
+ggplot2
+
+
+```{r}
+cities = c("Munich", "Bern", "Oslo")
+df_cities <- df %>% filter(city %in% cities, year(dt) > 1949, !is.na(avg_temp))
+(p_1950 <- ggplot(df_cities, aes(dt, avg_temp, color = city)) + geom_point() + xlab("") + ylab("avg monthly temp") + theme_solarized())
+```
+
+```{r}
+start_time <- as.Date("1992-01-01")
+end_time <- as.Date("2013-08-01")
+limits <- c(start_time,end_time)
+(p_1992 <- p_1950 + (scale_x_date(limits=limits)))
+```
+
+```{r}
+(p_1992 <- p_1992 + geom_smooth(se = FALSE))
+```
+
+```{r}
+df_munich <- df_cities %>% filter(city == 'Munich')
+p_munich_1950 <- ggplot(df_munich, aes(dt, avg_temp)) + geom_point() + xlab("") + ylab("avg monthly temp") + theme_solarized() 
+```
+
+```{r}
+(p_munich_1992 <- p_munich_1950 + (scale_x_date(limits=limits)))
+p_munich_1992 + stat_smooth()
+```
+
+```{r}
+p_munich_1992 + stat_smooth(method = "loess", se = FALSE, colour = "red") + stat_smooth(method = "lm", se = FALSE, color = "green") 
+```
+
+
+
+```{r}
+ filter(daily_2016, dense_rank(mean_temp) < 4) %>% select(day, mean_temp) %>% arrange(mean_temp)
+```
+
+```{r}
+ filter(daily_2016, dense_rank(mean_temp) < 4) %>% select(day, mean_temp) %>% arrange(mean_temp)
+```
+
+```{r}
+ filter(daily_2016, dense_rank(mean_temp) < 4) %>% select(day, mean_temp) %>% arrange(mean_temp)
+```
