@@ -9,6 +9,9 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 library(tidyverse)
 library(lubridate)
 library(ggthemes)
+library(gridExtra)
+library(forecast)
+library(stlplus)
 df <- read_csv('data/GlobalLandTemperaturesByCity.csv')
 ```
 
@@ -142,24 +145,109 @@ p_munich_1950 <- ggplot(df_munich, aes(dt, avg_temp)) + geom_point() + xlab("") 
 ```
 
 ```{r}
-(p_munich_1992 <- p_munich_1950 + (scale_x_date(limits=limits)))
+p_munich_1992 <- p_munich_1950 + (scale_x_date(limits=limits))
 p_munich_1992 + stat_smooth()
 ```
 
 ```{r}
-p_munich_1992 + stat_smooth(method = "loess", se = FALSE, colour = "red") + stat_smooth(method = "lm", se = FALSE, color = "green") 
+loess <- p_munich_1992 + stat_smooth(method = "loess", colour = "red") + labs(title = 'loess')
+lm <- p_munich_1992 + stat_smooth(method = "lm", color = "green") + labs(title = 'lm')
+grid.arrange(loess, lm, ncol=2)
+```
+
+construct time series 
+
+```{r}
+ts_1950 <- ts(df_munich$avg_temp, start = c(1950,1), end=c(2013,8), frequency = 12)
+# To subset a ts object and preserve the date information use the window() function
+ts_1992 <- window(ts_1950, start=c(1992,1))
+
+ts_1997 <- ts(monthly_1997_2015$mean_temp, start = c(1997,1), frequency = 12)
+
+par(mfrow=c(1,3))
+plot(ts_1950, main = 'Munich, 1950-2013', ylab = 'avg. monthly temp.')
+plot(ts_1992, main = 'Munich, 1992-2013', ylab = 'avg. monthly temp.')
+plot(ts_1997,  main = 'Munich, 1997-2015', ylab = 'avg. monthly temp., aggregated')
+par(mfrow=c(1,1))
+```
+
+decomposition
+
+```{r}
+fit1 <- stlplus(ts_1950, s.window="periodic")
+fit2 <- stlplus(ts_1992, s.window="periodic")
+grid.arrange(plot(fit1), plot(fit2), ncol = 2, top = 'Time series decomposition', left = '1950 - 2013', right = '1992 - 2013')
+```
+
+```{r}
+fit1 <- stlplus(ts_1950, s.window="periodic", t.window=37)
+fit2 <- stlplus(ts_1950, s.window="periodic", t.window=51)
+grid.arrange(plot(fit1), plot(fit2), ncol = 2, top = 'Time series decomposition, 1950 - 2013')
 ```
 
 
-
 ```{r}
- filter(daily_2016, dense_rank(mean_temp) < 4) %>% select(day, mean_temp) %>% arrange(mean_temp)
+fit1 <- stlplus(ts_1992, s.window="periodic", t.window=37)
+fit2 <- stlplus(ts_1992, s.window="periodic", t.window=51)
+grid.arrange(plot(fit1), plot(fit2), ncol = 2, top = 'Time series decomposition, 1992 - 2013')
 ```
 
 ```{r}
- filter(daily_2016, dense_rank(mean_temp) < 4) %>% select(day, mean_temp) %>% arrange(mean_temp)
+fit1 <- stlplus(ts_1997, s.window="periodic", t.window=37)
+fit2 <- stlplus(ts_1997, s.window="periodic", t.window=51)
+grid.arrange(plot(fit1), plot(fit2), ncol = 2, top = 'Time series decomposition, 1997 - 2015')
 ```
 
 ```{r}
- filter(daily_2016, dense_rank(mean_temp) < 4) %>% select(day, mean_temp) %>% arrange(mean_temp)
+fit <- ets(ts_1950)
+summary(fit)
+accuracy(fit)
+```
+
+```{r}
+plot(fit)
+```
+
+```{r}
+plot(forecast(fit, h=36))
+```
+
+```{r}
+fit <- ets(ts_1992)
+summary(fit)
+accuracy(fit)
+```
+
+```{r}
+plot(fit)
+```
+
+```{r}
+plot(forecast(fit, h=36))
+```
+
+```{r}
+fit <- ets(ts_1997)
+summary(fit)
+accuracy(fit)
+```
+
+```{r}
+plot(fit)
+```
+
+```{r}
+plot(forecast(fit, h=36))
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
 ```

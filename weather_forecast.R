@@ -127,26 +127,6 @@ tsdisplay(diff(diff(ts,12)))
 ###############################################################################################
 
 # lm, trend only
-t <- time(temp_1997_2015)
-c <- cycle(temp_1997_2015)
-lm_1997_2015 <- lm(temp_1997_2015 ~ t))
-
-summary(lm_1997_2015)
-confint(lm_1997_2015)
-AIC(lm_1997_2015)
-
-plot(resid(lm_1997_2015))
-acf(resid(lm_1997_2015))
-pacf(resid(lm_1997_2015))
-
-# glm 
-gls_1997_2015 <-gls(temp_1997_2015 ~ t, na.action = na.exclude, cor = corAR1(0.9))
-summary(gls_1997_2015)
-confint(gls_1997_2015)
-
-
-
-# lm, trend only
 t <- time(monthly_temp_1997_2015)
 c <- cycle(monthly_temp_1997_2015)
 lm_1997_2015_monthly <- lm(monthly_temp_1997_2015 ~ t)
@@ -173,12 +153,12 @@ summary(lm_1997_2015_monthly_s)
 confint(lm_1997_2015_monthly_s)
 AIC(lm_1997_2015_monthly_s)
 
-
 # predict
 new_time <- seq(2016, len= 2*12, by = 1/12)
 new_df <- tibble(time = new_time, season = rep(1:12, 2))
 predicted <- predict(lm_1997_2015_monthly_s, new_df)[1:24]
 
+# harmonic model
 SIN <- COS <- matrix(nr = length(monthly_temp_1997_2015), nc=6)  
 for (i in 1:6) {
   COS[,i] <-cos(2 * pi * i * time(monthly_temp_1997_2015))

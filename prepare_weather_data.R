@@ -17,6 +17,7 @@ library(tidyverse)
 library(lubridate)
 library(scales)
 library(nlme)
+library(forecast)
 
 url_munich_1997 <- 'http://www.wunderground.com/history/airport/EDDM/1997/1/1/CustomHistory.html?dayend=31&monthend=12&yearend=1997&format=1'
 url_munich_1998 <- 'http://www.wunderground.com/history/airport/EDDM/1998/1/1/CustomHistory.html?dayend=31&monthend=12&yearend=1998&format=1'
