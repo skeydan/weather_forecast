@@ -12,6 +12,8 @@ library(ggthemes)
 library(gridExtra)
 library(forecast)
 library(stlplus)
+library(tseries)
+library(forecastHybrid)
 df <- read_csv('data/GlobalLandTemperaturesByCity.csv')
 ```
 
@@ -241,13 +243,116 @@ plot(forecast(fit, h=36))
 ```
 
 ```{r}
-
+tsdisplay(ts_1950)
+tsdisplay(ts_1992)
+tsdisplay(ts_1997)
 ```
 
 ```{r}
+# Augmented Dickey-Fuller Test
+adf.test(ts_1950)
+adf.test(na.exclude(ts_1997))
+```
 
+
+```{r}
+fit <- auto.arima(ts_1950)
+summary(fit)
+
+# The forecast intervals for ARIMA models are based on assumptions that the residuals
+# are uncorrelated and normally distributed. If either of these are assumptions do not hold,
+# then the forecast intervals may be incorrect. 
+res <- fit$residuals
+acf(res, main='Autocorrelation of residuals')
+plot(density(res))
+plot(fit)
+plot(forecast(fit,h=36),include=80)
 ```
 
 ```{r}
+fit <- auto.arima(ts_1992)
+summary(fit)
 
+res <- fit$residuals
+acf(res, main='Autocorrelation of residuals')
+plot(density(res))
+plot(fit)
+plot(forecast(fit,h=36),include=80)
 ```
+
+```{r error=TRUE}
+fit <- auto.arima(ts_1997)
+summary(fit)
+
+res <- fit$residuals
+acf(res, main='Autocorrelation of residuals')
+plot(density(res))
+plot(fit)
+plot(forecast(fit,h=36),include=80)
+```
+
+
+```{r}
+fit <- auto.arima(ts_1950, max.order = 10, stepwise=FALSE)
+summary(fit)
+res <- fit$residuals
+acf(res, main='Autocorrelation of residuals')
+plot(density(res))
+plot(fit)
+plot(forecast(fit,h=36),include=80)
+```
+
+
+```{r}
+fit <- auto.arima(ts_1992, stepwise=FALSE, max.order = 10)
+summary(fit)
+res <- fit$residuals
+acf(res, main='Autocorrelation of residuals')
+plot(density(res))
+plot(fit)
+plot(forecast(fit,h=36),include=80)
+```
+
+
+```{r error=TRUE}
+fit <- auto.arima(ts_1997, stepwise=FALSE, max.order = 10)
+summary(fit)
+res <- fit$residuals
+acf(res, main='Autocorrelation of residuals')
+plot(density(res))
+plot(fit)
+plot(forecast(fit,h=36),include=80)
+```
+
+```{r}
+fit<- hybridModel(ts_1950)
+summary(fit)
+res <- fit$residuals
+acf(res, main='Autocorrelation of residuals')
+plot(density(res))
+plot(fit)
+plot(forecast(fit,h=36),include=80)
+```
+
+```{r}
+fit<- hybridModel(ts_1992)
+summary(fit)
+res <- fit$residuals
+acf(res, main='Autocorrelation of residuals')
+plot(density(res))
+plot(fit)
+plot(forecast(fit,h=36),include=80)
+```
+
+```{r}
+fit<- hybridModel(ts_1997)
+summary(fit)
+res <- fit$residuals
+acf(res, main='Autocorrelation of residuals')
+plot(density(res))
+plot(fit)
+plot(forecast(fit,h=36),include=80)
+```
+
+
+
