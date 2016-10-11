@@ -1,0 +1,283 @@
+```{r setup, include=FALSE}
+opts_chunk$set(cache=TRUE)
+```
+Data %>% Power %>% R
+========================================================
+width: 1440
+... you ready?
+
+
+What is R, and WHY
+========================================================
+should I care???
+
+
+R
+========================================================
+- Powerful open source programming language 
+- available in the database as Oracle R Enterprise
+- that lets you do virtually anything...
+
+
+Statistics
+========================================================
+
+
+Machine Learning
+========================================================
+
+
+Visualization
+========================================================
+
+
+
+OK fine.
+========================================================
+But I'm a SQL girl, now I gotta learn something totally new?
+
+
+Don't fear
+========================================================
+![](hadley.jpg)
+  
+"All tidy datasets are alike, every untidy dataset is untidy in its own way."
+
+
+Entering the tidyverse
+========================================================
+
+
+```{r}
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(lubridate)
+```
+
+
+
+
+But we're not just gonna do R syntax.
+========================================================
+Let's look at some real data!
+
+
+Everyone talks about the weather
+========================================================
+I certainly do.
+
+
+This is what I want for winter.
+========================================================
+
+
+This is what I get.
+========================================================
+
+
+Let's try to find out.
+========================================================
+- Berkeley Earth Surface Temperature Study
+  + https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data)
+  + monthly averages, 1743-2013
+- daily weather data for Munich
+  - retrieved from www.wunderground.com
+  - 1997-2015
+
+
+Berkeley Earth global land temperatures
+========================================================
+```{r}
+df <- read_csv('data/GlobalLandTemperaturesByCity.csv')
+head(df,3)
+```
+
+
+Before we even start
+========================================================
+_Let's get us nicer variable names._
+```{r}
+df <- rename(df,
+             avg_temp = AverageTemperature,
+             avg_temp_95p = AverageTemperatureUncertainty,
+             city = City,
+             country = Country,
+             lat = Latitude,
+             long = Longitude)
+head(df,3)
+```
+
+distinct (SELECT DISTINCT)
+========================================================
+_First thing I'd like to know: Which locations are available?_
+```{r}
+head(distinct(df, country), 3)
+head(distinct(df, city), 3)
+```
+
+filter (WHERE) 
+========================================================
+_Let's see some Munich data!_
+```{r}
+head(filter(df, city == 'Munich'), 3)
+```
+
+filter (combining predicates)
+========================================================
+
+```{r}
+# AND
+head(filter(df, city == 'Munich' & year(dt) > 2000), 3)
+
+# OR
+head(filter(df, city == 'Munich' | year(dt) > 2000), 3)
+```
+
+
+select (SELECT)
+========================================================
+_Just concentrate on the important variables._
+```{r}
+head(select(filter(df, city == 'Munich'), avg_temp, avg_temp_95p), 8)
+```
+
+arrange (ORDER BY)
+========================================================
+_Coldest months ever._
+```{r}
+head(arrange(select(filter(df, city == 'Munich'), dt, avg_temp), avg_temp), 8)
+```
+
+All these parens are getting annoying!
+========================================================
+_What if we added further data processing steps?._
+
+
+Sure it is!
+========================================================
+
+![](pipe.jpg)
+  
+What you see:  __x %>% f(y)__  
+What you get:    __f(x, y)__ 
+
+Coldest months, with the %>%!
+========================================================
+
+```{r}
+df %>% filter(city == 'Munich') %>% select(dt, avg_temp) %>% arrange(avg_temp) %>% head(3)
+```
+
+_Now that we may use %>%, we can tackle more complex statements._
+
+group_by (GROUP BY)
+========================================================
+_What countries have most measurements?_
+```{r}
+df %>% group_by(country) %>% summarise(count=n()) %>% arrange(count %>% desc()) %>% head(8)
+```
+
+
+group_by
+========================================================
+_What are the average, min and max monthly temperatures in Germany after 1949?_
+```{r}
+df %>% filter(country == 'Germany', !is.na(avg_temp), year(dt) > 1949) %>% group_by(month(dt)) %>% summarise(count = n(), avg = mean(avg_temp), min = min(avg_temp), max = max(avg_temp))
+```
+
+inner_join, left_join, anti_join, semi_join...
+========================================================
+_Let's join the two different data sources on the month column:_
+```{r}
+daily_1997_2015 <- read_csv('data/munich_1997_2015.csv')
+monthly_1997_2015 <- daily_1997_2015 %>% group_by(month = floor_date(daily_1997_2015$day, "month")) %>% summarise(mean_temp = mean(mean_temp))
+
+df_1949 <- df %>% select(dt, avg_temp) %>% filter(year(dt) > 1949)
+
+df_1949 %>% inner_join(monthly_1997_2015, by = c("dt" = "month")) %>% head(3)
+```
+
+union
+========================================================
+_Union of pre-2016 and 2016 Munich daily data._
+```{r}
+daily_2016 <- read_csv('data/munich_2016.csv')
+daily_1997_2015 %>% dplyr::union(daily_2016) %>% arrange(day) %>% head(8)
+```
+
+window functions
+========================================================
+_5% hottest days in Munich in 2016._
+```{r}
+ filter(daily_2016, cume_dist(desc(mean_temp)) < 0.05) %>% select(day, mean_temp) %>% arrange(desc(mean_temp))
+```
+
+window functions
+========================================================
+_Top 3 cold days in Munich in 2016._
+
+```{r}
+ filter(daily_2016, dense_rank(mean_temp) < 4) %>% select(day, mean_temp) %>% arrange(mean_temp)
+```
+
+window functions
+========================================================
+_Consecutive days where mean temperatures differ by more than 5 degrees._
+
+```{r}
+daily_2016 %>% mutate(yesterday_temp = lag(mean_temp)) %>% filter(abs(yesterday_temp - mean_temp) > 5) %>% select(day, mean_temp, yesterday_temp)
+```
+
+OK. So we can do all we can in SQL with R. Nice.
+========================================================
+How about what we CAN'T do in SQL?
+
+
+There was this original question about snow.
+========================================================
+Let's see what we might predict about the future.
+
+
+The grammar of graphics: visualization with ggplot2
+========================================================
+_How cold is it in Munich, compared to, say, Bern or Oslo?_  
+
+```{r, echo=FALSE}
+library(ggthemes)
+cities = c("Munich", "Bern", "Oslo")
+df_cities <- df %>% filter(city %in% cities, year(dt) > 1949, !is.na(avg_temp))
+(p_1950 <- ggplot(df_cities, aes(dt, avg_temp, color = city)) + geom_point() + xlab("") + ylab("avg monthly temp") + theme_solarized())
+```
+
+```{r}
+start_time <- as.Date("1992-01-01")
+end_time <- as.Date("2013-08-01")
+limits <- c(start_time,end_time)
+(p_1992 <- p_1950 + (scale_x_date(limits=limits)))
+```
+
+
+
+========================================================
+
+
+
+========================================================
+
+
+
+========================================================
+
+
+
+
+
+
+Slide With Plot
+========================================================
+
+```{r, }
+plot(cars)
+```

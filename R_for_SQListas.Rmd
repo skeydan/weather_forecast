@@ -1,6 +1,6 @@
 ---
 title: "R for SQListas"
-output: html_document
+output: slidy_presentation
 ---
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word 
@@ -324,7 +324,7 @@ plot(fit)
 plot(forecast(fit,h=36),include=80)
 ```
 
-```{r}
+```{r error=TRUE}
 fit<- hybridModel(ts_1950)
 summary(fit)
 res <- fit$residuals
@@ -334,7 +334,7 @@ plot(fit)
 plot(forecast(fit,h=36),include=80)
 ```
 
-```{r}
+```{r error=TRUE}
 fit<- hybridModel(ts_1992)
 summary(fit)
 res <- fit$residuals
@@ -344,7 +344,7 @@ plot(fit)
 plot(forecast(fit,h=36),include=80)
 ```
 
-```{r}
+```{r error=TRUE}
 fit<- hybridModel(ts_1997)
 summary(fit)
 res <- fit$residuals
