@@ -1,6 +1,20 @@
 ```{r setup, include=FALSE}
 opts_chunk$set(cache=TRUE)
+#opts_chunk$set(out.width='750px', dpi=200)
 ```
+<style>
+.small-code pre code {
+  font-size: 1em;
+}
+.midcenter {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
+</style>
+
+
+
 Data %>% Power %>% R
 ========================================================
 width: 1440
@@ -9,45 +23,76 @@ width: 1440
 
 What is R, and WHY
 ========================================================
+class:small-code
+
+&nbsp;
+  
 should I care???
 
 
 R
 ========================================================
-- Powerful open source programming language 
+class:small-code
+
+&nbsp;
+  
+- a powerful open source programming language 
 - available in the database as Oracle R Enterprise
 - that lets you do virtually anything...
 
 
 Statistics
 ========================================================
+class:small-code
+
+&nbsp;
+  
 
 
 Machine Learning
 ========================================================
+class:small-code
+
+&nbsp;
+  
 
 
 Visualization
 ========================================================
+class:small-code
+
+&nbsp;
+  
 
 
 
 OK fine.
 ========================================================
+class:small-code
+
+&nbsp;
+  
 But I'm a SQL girl, now I gotta learn something totally new?
 
 
 Don't fear
 ========================================================
+class:small-code
+
+&nbsp;
+  
 ![](hadley.jpg)
   
-"All tidy datasets are alike, every untidy dataset is untidy in its own way."
+_"All tidy datasets are alike, every untidy dataset is untidy in its own way."_<br />
+(Hadley Wickham)
 
 
 Entering the tidyverse
 ========================================================
+class:small-code
 
-
+&nbsp;
+  
 ```{r}
 library(readr)
 library(dplyr)
@@ -61,34 +106,58 @@ library(lubridate)
 
 But we're not just gonna do R syntax.
 ========================================================
+class:small-code
+
+&nbsp;
+  
 Let's look at some real data!
 
 
 Everyone talks about the weather
 ========================================================
+class:small-code
+
+&nbsp;
+  
 I certainly do.
 
 
 This is what I want for winter.
 ========================================================
+class:small-code
+
+&nbsp;
+  
 
 
 This is what I get.
 ========================================================
+class:small-code
+
+&nbsp;
+  
 
 
-Let's try to find out.
+Let's try to find out about the future
 ========================================================
+class:small-code
+
+&nbsp;
+  
 - Berkeley Earth Surface Temperature Study
   + https://www.kaggle.com/berkeleyearth/climate-change-earth-surface-temperature-data)
   + monthly averages, 1743-2013
-- daily weather data for Munich
+- Weather data from weather station Munich airport
   - retrieved from www.wunderground.com
-  - 1997-2015
+  - daily averages, 1997-2015
 
 
 Berkeley Earth global land temperatures
 ========================================================
+class:small-code
+
+&nbsp;
+  
 ```{r}
 df <- read_csv('data/GlobalLandTemperaturesByCity.csv')
 head(df,3)
@@ -97,7 +166,11 @@ head(df,3)
 
 Before we even start
 ========================================================
-_Let's get us nicer variable names._
+class:small-code
+
+&nbsp;
+  
+_Let's get ourselves some nicer variable names._
 ```{r}
 df <- rename(df,
              avg_temp = AverageTemperature,
@@ -109,8 +182,12 @@ df <- rename(df,
 head(df,3)
 ```
 
-distinct (SELECT DISTINCT)
+distinct (SELECT distinct)
 ========================================================
+class:small-code
+
+&nbsp;
+  
 _First thing I'd like to know: Which locations are available?_
 ```{r}
 head(distinct(df, country), 3)
@@ -119,6 +196,10 @@ head(distinct(df, city), 3)
 
 filter (WHERE) 
 ========================================================
+class:small-code
+
+&nbsp;
+  
 _Let's see some Munich data!_
 ```{r}
 head(filter(df, city == 'Munich'), 3)
@@ -126,6 +207,9 @@ head(filter(df, city == 'Munich'), 3)
 
 filter (combining predicates)
 ========================================================
+class:small-code
+
+&nbsp;
 
 ```{r}
 # AND
@@ -138,6 +222,10 @@ head(filter(df, city == 'Munich' | year(dt) > 2000), 3)
 
 select (SELECT)
 ========================================================
+class:small-code
+
+&nbsp;
+  
 _Just concentrate on the important variables._
 ```{r}
 head(select(filter(df, city == 'Munich'), avg_temp, avg_temp_95p), 8)
@@ -145,19 +233,30 @@ head(select(filter(df, city == 'Munich'), avg_temp, avg_temp_95p), 8)
 
 arrange (ORDER BY)
 ========================================================
+class:small-code
+
+&nbsp;
+  
 _Coldest months ever._
 ```{r}
 head(arrange(select(filter(df, city == 'Munich'), dt, avg_temp), avg_temp), 8)
 ```
 
-All these parens are getting annoying!
+All these parens are starting to be a pain...
 ========================================================
-_What if we added further data processing steps?._
+class:small-code
+
+&nbsp;
+  
+What if we added still further data processing steps?
 
 
-Sure it is!
+Enter: %>%
 ========================================================
+class:small-code
 
+&nbsp;
+  
 ![](pipe.jpg)
   
 What you see:  __x %>% f(y)__  
@@ -165,30 +264,46 @@ What you get:    __f(x, y)__
 
 Coldest months, with the %>%!
 ========================================================
+class:small-code
 
+&nbsp;
+  
 ```{r}
-df %>% filter(city == 'Munich') %>% select(dt, avg_temp) %>% arrange(avg_temp) %>% head(3)
+df %>% filter(city == 'Munich') %>% select(dt, avg_temp) %>% arrange(avg_temp) %>% head(8)
 ```
+&nbsp;
 
-_Now that we may use %>%, we can tackle more complex statements._
+_Now that we have %>%, we can tackle more complex statements._
 
 group_by (GROUP BY)
 ========================================================
+class:small-code
+
+&nbsp;
+  
 _What countries have most measurements?_
 ```{r}
 df %>% group_by(country) %>% summarise(count=n()) %>% arrange(count %>% desc()) %>% head(8)
 ```
 
 
-group_by
+group_by (multiple summaries)
 ========================================================
+class:small-code
+
+&nbsp;
+  
 _What are the average, min and max monthly temperatures in Germany after 1949?_
 ```{r}
 df %>% filter(country == 'Germany', !is.na(avg_temp), year(dt) > 1949) %>% group_by(month(dt)) %>% summarise(count = n(), avg = mean(avg_temp), min = min(avg_temp), max = max(avg_temp))
 ```
 
-inner_join, left_join, anti_join, semi_join...
+JOINs: inner_join, left_join, anti_join ...
 ========================================================
+class:small-code
+
+&nbsp;
+  
 _Let's join the two different data sources on the month column:_
 ```{r}
 daily_1997_2015 <- read_csv('data/munich_1997_2015.csv')
@@ -199,85 +314,193 @@ df_1949 <- df %>% select(dt, avg_temp) %>% filter(year(dt) > 1949)
 df_1949 %>% inner_join(monthly_1997_2015, by = c("dt" = "month")) %>% head(3)
 ```
 
-union
+UNION & friends: union, setdiff, intersect
 ========================================================
-_Union of pre-2016 and 2016 Munich daily data._
+class:small-code
+
+&nbsp;
+  
+_Union of pre-2016 and 2016 Munich daily weather data._
 ```{r}
 daily_2016 <- read_csv('data/munich_2016.csv')
 daily_1997_2015 %>% dplyr::union(daily_2016) %>% arrange(day) %>% head(8)
 ```
 
-window functions
+Window functions (1)
 ========================================================
+class:small-code
+
+&nbsp;
+  
 _5% hottest days in Munich in 2016._
 ```{r}
  filter(daily_2016, cume_dist(desc(mean_temp)) < 0.05) %>% select(day, mean_temp) %>% arrange(desc(mean_temp))
 ```
 
-window functions
+Window functions (2)
 ========================================================
-_Top 3 cold days in Munich in 2016._
+class:small-code
+
+&nbsp;
+  
+_Top 3 coldest days in Munich in 2016._
 
 ```{r}
  filter(daily_2016, dense_rank(mean_temp) < 4) %>% select(day, mean_temp) %>% arrange(mean_temp)
 ```
 
-window functions
+Window functions
 ========================================================
+class:small-code
+
+&nbsp;
+  
 _Consecutive days where mean temperatures differ by more than 5 degrees._
 
 ```{r}
 daily_2016 %>% mutate(yesterday_temp = lag(mean_temp)) %>% filter(abs(yesterday_temp - mean_temp) > 5) %>% select(day, mean_temp, yesterday_temp)
 ```
 
-OK. So we can do all we can in SQL with R. Nice.
+OK. So we can do all that with R. 
 ========================================================
+class:small-code
+
+&nbsp;
+  
 How about what we CAN'T do in SQL?
 
 
 There was this original question about snow.
 ========================================================
+class:small-code
+
+&nbsp;
+  
 Let's see what we might predict about the future.
 
 
 The grammar of graphics: visualization with ggplot2
 ========================================================
-_How cold is it in Munich, compared to, say, Bern or Oslo?_  
+class:small-code
 
+&nbsp;
+  
+_How cold is it in Munich, compared to, say, Bern or Oslo?_  
 ```{r, echo=FALSE}
 library(ggthemes)
-cities = c("Munich", "Bern", "Oslo")
-df_cities <- df %>% filter(city %in% cities, year(dt) > 1949, !is.na(avg_temp))
+```
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+df_cities <- df %>% filter(city %in% c("Munich", "Bern", "Oslo"), year(dt) > 1949, !is.na(avg_temp))
 (p_1950 <- ggplot(df_cities, aes(dt, avg_temp, color = city)) + geom_point() + xlab("") + ylab("avg monthly temp") + theme_solarized())
 ```
 
-```{r}
+
+Can we see a trend?
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
 start_time <- as.Date("1992-01-01")
 end_time <- as.Date("2013-08-01")
 limits <- c(start_time,end_time)
-(p_1992 <- p_1950 + (scale_x_date(limits=limits)))
+(p_1992 <- p_1950 + (scale_x_date(limits=limits)) + geom_smooth(se = TRUE))
 ```
 
 
-
+Let's concentrate on Munich.
 ========================================================
+class:small-code
 
-
-
-========================================================
-
-
-
-========================================================
-
-
-
-
-
-
-Slide With Plot
-========================================================
-
-```{r, }
-plot(cars)
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+df_munich <- df_cities %>% filter(city == 'Munich')
+p_munich_1950 <- ggplot(df_munich, aes(dt, avg_temp)) + geom_point() + xlab("") + ylab("avg monthly temp") + theme_solarized() + geom_smooth()
+p_munich_1950
 ```
+
+Difficult.
+========================================================
+
+&nbsp;
+  
+There might be a trend, or there might not.
+  
+Of course, there is not just one smoothing algorithm only.  
+
+
+LOESS (Local Polynomial Regression Fitting) vs. LM (Linear Model)
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+loess <- p_munich_1950 + stat_smooth(method = "loess", colour = "red") + labs(title = 'loess')
+lm <- p_munich_1950 + stat_smooth(method = "lm", color = "green") + labs(title = 'lm')
+grid.arrange(loess, lm, ncol=2)
+```
+
+
+So?
+========================================================
+
+&nbsp;
+  
+We need to dig deeper and really analyze those time series.
+
+
+Time series: A quick first glance
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+ts_1950 <- ts(df_munich$avg_temp, start = c(1950,1), end=c(2013,8), frequency = 12)
+ts_1997 <- ts(monthly_1997_2015$mean_temp, start = c(1997,1), frequency = 12)
+par(mfrow=c(1,2))
+plot(ts_1950, main = 'Munich, 1950-2013', ylab = 'avg. monthly temp.')
+plot(ts_1997,  main = 'Munich, 1997-2015', ylab = 'avg. monthly temp., aggregated')
+par(mfrow=c(1,1))
+```
+
+
+Time series decomposition
+========================================================
+class:small-code
+
+&nbsp;
+  
+Time series may be decomposed into different effects:
+- trend
+- seasonal (if available)
+- remainder
+
+
+
+
+Time series decomposition: Berkeley Earth data, 1950-2013
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=6, fig.show='hold', fig.align='center'}
+library(stlplus)
+fit <- stlplus(ts_1950, s.window="periodic", t.window=37)
+plot(fit)
+```
+
+Time series decomposition: Munich weather station data, 1997-2015
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+fit <- stlplus(ts_1997, s.window="periodic", t.window=37)
+```
+
