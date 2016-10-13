@@ -18,17 +18,8 @@ opts_chunk$set(cache=TRUE)
 Data %>% Power %>% R
 ========================================================
 width: 1440
-... you ready?
-
-
-What is R, and WHY
-========================================================
-class:small-code
-
-&nbsp;
-  
-should I care???
-
+incremental:true 
+You ready?
 
 R
 ========================================================
@@ -41,38 +32,27 @@ class:small-code
 - that lets you do virtually anything...
 
 
-Statistics
+Especially (but not only)
 ========================================================
 class:small-code
 
 &nbsp;
   
+- Statistics
+- Machine Learning
+- Visualization
+- Presentation (evidently)
 
 
-Machine Learning
+Fine.
 ========================================================
 class:small-code
 
 &nbsp;
   
-
-
-Visualization
-========================================================
-class:small-code
-
-&nbsp;
+But I'm a SQL girl.  
   
-
-
-
-OK fine.
-========================================================
-class:small-code
-
-&nbsp;
-  
-But I'm a SQL girl, now I gotta learn something totally new?
+Now I gotta learn something totally new?
 
 
 Don't fear
@@ -80,6 +60,9 @@ Don't fear
 class:small-code
 
 &nbsp;
+
+Enter  
+
   
 ![](hadley.jpg)
   
@@ -87,7 +70,7 @@ _"All tidy datasets are alike, every untidy dataset is untidy in its own way."_<
 (Hadley Wickham)
 
 
-Entering the tidyverse
+The tidyverse
 ========================================================
 class:small-code
 
@@ -127,15 +110,17 @@ This is what I want for winter.
 class:small-code
 
 &nbsp;
-  
 
+![](snow.jpg)
 
 This is what I get.
 ========================================================
 class:small-code
 
 &nbsp;
-  
+
+![](rain.jpg)
+
 
 
 Let's try to find out about the future
@@ -228,7 +213,7 @@ class:small-code
   
 _Just concentrate on the important variables._
 ```{r}
-head(select(filter(df, city == 'Munich'), avg_temp, avg_temp_95p), 8)
+head(select(filter(df, city == 'Munich'), dt, avg_temp, avg_temp_95p), 8)
 ```
 
 arrange (ORDER BY)
@@ -272,7 +257,6 @@ class:small-code
 df %>% filter(city == 'Munich') %>% select(dt, avg_temp) %>% arrange(avg_temp) %>% head(8)
 ```
 &nbsp;
-
 _Now that we have %>%, we can tackle more complex statements._
 
 group_by (GROUP BY)
@@ -494,7 +478,7 @@ fit <- stlplus(ts_1950, s.window="periodic", t.window=37)
 plot(fit)
 ```
 
-Time series decomposition: Munich weather station data, 1997-2015
+Time series decomposition: Munich weather data, 1997-2015
 ========================================================
 class:small-code
 
@@ -502,5 +486,309 @@ class:small-code
   
 ```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
 fit <- stlplus(ts_1997, s.window="periodic", t.window=37)
+plot(fit)
 ```
 
+
+
+Exponential Smoothing
+========================================================
+class:small-code
+
+&nbsp;
+
+- Predicted values at time t+1 are weighted averages of values at times t, t-1, t-2 ...: $\hat{y}_{T+1|T} = \alpha y_T + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^2 y_{T-2}+ \cdots$
+- Can also model trends and seasonal effects (Holt-Winters)
+
+State Space Models
+========================================================
+class:small-code
+
+&nbsp;
+  
+- Conceptually equivalent to exponential smoothing
+- BUT also generate prediction intervals!
+- http://www.exponentialsmoothing.net/
+- R: __ets()__ function in __forecast__ package
+
+ets()
+========================================================
+class:small-code
+
+&nbsp;
+  
+- When called without parameters, __ets()__ determines a suitable model itself
+- Using maximum likelihood estimation
+
+ets():  Berkeley Earth data, 1950-2013
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+library(forecast)
+fit <- ets(ts_1950)
+summary(fit)
+```
+
+ets():  Berkeley Earth data, 1950-2013
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+# Plot the smoothed components - no trend!
+plot(fit)
+```
+
+ets():  Berkeley Earth data, 1950-2013
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+# Forecast next 3 years
+plot(forecast(fit, h=36))
+```
+
+
+
+ets(): Munich weather data, 1997-2015
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+fit <- ets(ts_1997) 
+summary(fit)
+```
+
+
+
+ets(): Munich weather data, 1997-2015
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+# Plot the smoothed components - no trend!
+plot(fit)
+```
+
+
+ets(): Munich weather data, 1997-2015
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+# Forecast next 3 years
+plot(forecast(fit, h=36))
+```
+
+
+ARIMA
+========================================================
+class:small-code
+
+&nbsp;
+  
+- *__AR(p)__*:  
+autoregressive: $$y_{t} = c + \phi_{1}y_{t-1} + \phi_{2}y_{t-2} + \dots + \phi_{p}y_{t-p} + e_{t}$$
+- *__I(d)__*:  
+number of times differencing has to be applied to obtain a stationary series
+- *__MA(q)__*:  
+moving average: $$y_{t} = c + e_t + \theta_{1}e_{t-1} + \theta_{2}e_{t-2} + \dots + \theta_{q}e_{t-q}$$
+
+&nbsp;
+
+_Stationarity: If a time series $y_{t}$ is stationary, then for all $s$, the distribution of ($y_{t}$,…, $y_{t+s}$) does not depend on $t$._
+
+
+Stationarity: ACF and PACF
+========================================================
+class:small-code
+
+&nbsp;
+Berkeley Earth data, 1950-2013
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+tsdisplay(ts_1950)
+```
+
+Stationarity: ACF and PACF
+========================================================
+class:small-code
+
+&nbsp;
+Munich weather data, 1997-2015
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+tsdisplay(ts_1997)
+```
+
+
+Cyclostationary process
+========================================================
+class:small-code
+
+&nbsp;
+
+Mean and variance are constant for seasonally corresponding measurements.  
+
+
+How do we decide which p,d,q to use for ARIMA?
+========================================================
+class:small-code
+
+&nbsp;
+  
+Just use auto.arima().  
+(But see later.)
+
+ARIMA: Berkeley Earth data, 1950-2013
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+fit <- auto.arima(ts_1950)
+summary(fit)
+```
+
+
+ARIMA: Munich weather data, 1997-2015
+========================================================
+class:small-code
+
+&nbsp;
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+fit <- auto.arima(ts_1997)
+summary(fit)
+```
+
+
+
+Let's get forecasting!
+========================================================
+class:small-code
+
+&nbsp;
+  
+Wait. 
+ 
+ARIMA forecasts are based on the assumption that residuals are uncorrelated and normally distributed.
+
+
+Residuals: Autocorrelation
+========================================================
+class:small-code
+
+&nbsp;
+
+Berkeley Earth data, 1950-2013 
+  
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+fit <- auto.arima(ts_1950)
+res <- fit$residuals
+acf <- acf(res, main='Autocorrelation of residuals')
+```
+
+
+Allowing for more parameters: Berkeley Earth data, 1950-2013 
+========================================================
+class:small-code
+
+&nbsp;
+
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+fit <- auto.arima(ts_1950, max.order = 10, stepwise=FALSE)
+summary(fit)
+```
+
+Forecast: Berkeley Earth data, 1950-2013 
+========================================================
+class:small-code
+
+&nbsp;
+
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+plot(forecast(fit,h=36),include=80)
+```
+
+
+
+Allowing for more parameters: Munich weather data, 1997-2015 
+========================================================
+class:small-code
+
+&nbsp;
+
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+fit <- auto.arima(ts_1997, max.order = 10, stepwise=FALSE) 
+summary(fit)
+```
+
+
+Forecast: Munich weather data, 1997-2015 
+========================================================
+class:small-code
+
+&nbsp;
+
+```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
+plot(forecast(fit,h=36),include=80)
+```
+
+
+Oops
+========================================================
+class:small-code
+
+&nbsp;
+
+What happened?
+
+- ARIMA has problems with too few data points
+- ARIMA works better with the longer series
+- while ETS handles the shorter series better
+- larger uncertainty intervals with ARIMA than with ETS
+
+
+Beyond the weather ...
+========================================================
+class:small-code
+
+&nbsp;
+
+- Forecasting is required (and done!) everywhere
+- R gives you all the tools you need
+- you need to know what you're doing though!
+
+
+Data Science
+========================================================
+class:small-code
+
+&nbsp;
+
+... is about more than just having data.
+
+It needs (a bit of) science get to the insights!
+
+
+Let's start doing some data science
+========================================================
+class:small-code
+
+&nbsp;
+
+Thank you!
