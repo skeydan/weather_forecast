@@ -11,6 +11,17 @@ opts_chunk$set(cache=TRUE)
     top: 50%;
     left: 50%;
 }
+.footer {
+    position: fixed; 
+    top: 90%;
+    text-align:right; 
+    width:90%;
+    margin-top:-150px;
+}
+.reveal section img {
+  border: 0px;
+  box-shadow: 0 0 0 0;
+}
 </style>
 
 
@@ -20,6 +31,7 @@ Data %>% Power %>% R
 width: 1440
 incremental:true 
 You ready?
+
 
 R
 ========================================================
@@ -31,6 +43,9 @@ class:small-code
 - available in the database as Oracle R Enterprise
 - that lets you do virtually anything...
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 Especially (but not only)
 ========================================================
@@ -43,6 +58,9 @@ class:small-code
 - Visualization
 - Presentation (evidently)
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 Fine.
 ========================================================
@@ -54,6 +72,10 @@ But I'm a SQL girl.
   
 Now I gotta learn something totally new?
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
 
 Don't fear
 ========================================================
@@ -63,11 +85,15 @@ class:small-code
 
 Enter  
 
-  
-![](hadley.jpg)
+<img src='hadley.jpg' border=0 width='200px'>
   
 _"All tidy datasets are alike, every untidy dataset is untidy in its own way."_<br />
 (Hadley Wickham)
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 The tidyverse
@@ -86,6 +112,11 @@ library(lubridate)
 
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 
 But we're not just gonna do R syntax.
 ========================================================
@@ -94,6 +125,11 @@ class:small-code
 &nbsp;
   
 Let's look at some real data!
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 Everyone talks about the weather
@@ -105,13 +141,23 @@ class:small-code
 I certainly do.
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 This is what I want for winter.
 ========================================================
 class:small-code
 
 &nbsp;
 
-![](snow.jpg)
+<img src='snow.jpg' border=0 width='400px'>
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
 
 This is what I get.
 ========================================================
@@ -119,7 +165,12 @@ class:small-code
 
 &nbsp;
 
-![](rain.jpg)
+<img src='rain.jpg' border=0 width='400px'>
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 
@@ -137,6 +188,11 @@ class:small-code
   - daily averages, 1997-2015
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Berkeley Earth global land temperatures
 ========================================================
 class:small-code
@@ -147,6 +203,11 @@ class:small-code
 df <- read_csv('data/GlobalLandTemperaturesByCity.csv')
 head(df,3)
 ```
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 Before we even start
@@ -167,6 +228,11 @@ df <- rename(df,
 head(df,3)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 distinct (SELECT distinct)
 ========================================================
 class:small-code
@@ -179,6 +245,11 @@ head(distinct(df, country), 3)
 head(distinct(df, city), 3)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 filter (WHERE) 
 ========================================================
 class:small-code
@@ -189,6 +260,11 @@ _Let's see some Munich data!_
 ```{r}
 head(filter(df, city == 'Munich'), 3)
 ```
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
 
 filter (combining predicates)
 ========================================================
@@ -205,6 +281,11 @@ head(filter(df, city == 'Munich' | year(dt) > 2000), 3)
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 select (SELECT)
 ========================================================
 class:small-code
@@ -215,6 +296,11 @@ _Just concentrate on the important variables._
 ```{r}
 head(select(filter(df, city == 'Munich'), dt, avg_temp, avg_temp_95p), 8)
 ```
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
 
 arrange (ORDER BY)
 ========================================================
@@ -227,6 +313,11 @@ _Coldest months ever._
 head(arrange(select(filter(df, city == 'Munich'), dt, avg_temp), avg_temp), 8)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 All these parens are starting to be a pain...
 ========================================================
 class:small-code
@@ -236,16 +327,26 @@ class:small-code
 What if we added still further data processing steps?
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Enter: %>%
 ========================================================
 class:small-code
 
 &nbsp;
   
-![](pipe.jpg)
+<img src='pipe.jpg' border=0 width='400px'>
   
 What you see:  __x %>% f(y)__  
 What you get:    __f(x, y)__ 
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
 
 Coldest months, with the %>%!
 ========================================================
@@ -259,6 +360,11 @@ df %>% filter(city == 'Munich') %>% select(dt, avg_temp) %>% arrange(avg_temp) %
 &nbsp;
 _Now that we have %>%, we can tackle more complex statements._
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 group_by (GROUP BY)
 ========================================================
 class:small-code
@@ -271,6 +377,11 @@ df %>% group_by(country) %>% summarise(count=n()) %>% arrange(count %>% desc()) 
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 group_by (multiple summaries)
 ========================================================
 class:small-code
@@ -281,6 +392,11 @@ _What are the average, min and max monthly temperatures in Germany after 1949?_
 ```{r}
 df %>% filter(country == 'Germany', !is.na(avg_temp), year(dt) > 1949) %>% group_by(month(dt)) %>% summarise(count = n(), avg = mean(avg_temp), min = min(avg_temp), max = max(avg_temp))
 ```
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
 
 JOINs: inner_join, left_join, anti_join ...
 ========================================================
@@ -298,6 +414,11 @@ df_1949 <- df %>% select(dt, avg_temp) %>% filter(year(dt) > 1949)
 df_1949 %>% inner_join(monthly_1997_2015, by = c("dt" = "month")) %>% head(3)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 UNION & friends: union, setdiff, intersect
 ========================================================
 class:small-code
@@ -310,6 +431,11 @@ daily_2016 <- read_csv('data/munich_2016.csv')
 daily_1997_2015 %>% dplyr::union(daily_2016) %>% arrange(day) %>% head(8)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Window functions (1)
 ========================================================
 class:small-code
@@ -320,6 +446,11 @@ _5% hottest days in Munich in 2016._
 ```{r}
  filter(daily_2016, cume_dist(desc(mean_temp)) < 0.05) %>% select(day, mean_temp) %>% arrange(desc(mean_temp))
 ```
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
 
 Window functions (2)
 ========================================================
@@ -333,6 +464,11 @@ _Top 3 coldest days in Munich in 2016._
  filter(daily_2016, dense_rank(mean_temp) < 4) %>% select(day, mean_temp) %>% arrange(mean_temp)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Window functions
 ========================================================
 class:small-code
@@ -345,6 +481,11 @@ _Consecutive days where mean temperatures differ by more than 5 degrees._
 daily_2016 %>% mutate(yesterday_temp = lag(mean_temp)) %>% filter(abs(yesterday_temp - mean_temp) > 5) %>% select(day, mean_temp, yesterday_temp)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 OK. So we can do all that with R. 
 ========================================================
 class:small-code
@@ -354,6 +495,11 @@ class:small-code
 How about what we CAN'T do in SQL?
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 There was this original question about snow.
 ========================================================
 class:small-code
@@ -361,6 +507,11 @@ class:small-code
 &nbsp;
   
 Let's see what we might predict about the future.
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 The grammar of graphics: visualization with ggplot2
@@ -379,6 +530,11 @@ df_cities <- df %>% filter(city %in% c("Munich", "Bern", "Oslo"), year(dt) > 194
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Can we see a trend?
 ========================================================
 class:small-code
@@ -393,6 +549,11 @@ limits <- c(start_time,end_time)
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Let's concentrate on Munich.
 ========================================================
 class:small-code
@@ -405,6 +566,11 @@ p_munich_1950 <- ggplot(df_munich, aes(dt, avg_temp)) + geom_point() + xlab("") 
 p_munich_1950
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Difficult.
 ========================================================
 
@@ -413,6 +579,11 @@ Difficult.
 There might be a trend, or there might not.
   
 Of course, there is not just one smoothing algorithm only.  
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 LOESS (Local Polynomial Regression Fitting) vs. LM (Linear Model)
@@ -428,12 +599,22 @@ grid.arrange(loess, lm, ncol=2)
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 So?
 ========================================================
 
 &nbsp;
   
 We need to dig deeper and really analyze those time series.
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 Time series: A quick first glance
@@ -452,6 +633,11 @@ par(mfrow=c(1,1))
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Time series decomposition
 ========================================================
 class:small-code
@@ -463,6 +649,11 @@ Time series may be decomposed into different effects:
 - seasonal (if available)
 - remainder
 
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 
@@ -478,6 +669,11 @@ fit <- stlplus(ts_1950, s.window="periodic", t.window=37)
 plot(fit)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Time series decomposition: Munich weather data, 1997-2015
 ========================================================
 class:small-code
@@ -490,6 +686,11 @@ plot(fit)
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 
 Exponential Smoothing
 ========================================================
@@ -499,6 +700,11 @@ class:small-code
 
 - Predicted values at time t+1 are weighted averages of values at times t, t-1, t-2 ...: $\hat{y}_{T+1|T} = \alpha y_T + \alpha(1-\alpha) y_{T-1} + \alpha(1-\alpha)^2 y_{T-2}+ \cdots$
 - Can also model trends and seasonal effects (Holt-Winters)
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
 
 State Space Models
 ========================================================
@@ -511,6 +717,11 @@ class:small-code
 - http://www.exponentialsmoothing.net/
 - R: __ets()__ function in __forecast__ package
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 ets()
 ========================================================
 class:small-code
@@ -519,6 +730,11 @@ class:small-code
   
 - When called without parameters, __ets()__ determines a suitable model itself
 - Using maximum likelihood estimation
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
 
 ets():  Berkeley Earth data, 1950-2013
 ========================================================
@@ -532,6 +748,11 @@ fit <- ets(ts_1950)
 summary(fit)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 ets():  Berkeley Earth data, 1950-2013
 ========================================================
 class:small-code
@@ -543,6 +764,11 @@ class:small-code
 plot(fit)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 ets():  Berkeley Earth data, 1950-2013
 ========================================================
 class:small-code
@@ -553,6 +779,11 @@ class:small-code
 # Forecast next 3 years
 plot(forecast(fit, h=36))
 ```
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 
@@ -568,6 +799,11 @@ summary(fit)
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 
 ets(): Munich weather data, 1997-2015
 ========================================================
@@ -579,6 +815,11 @@ class:small-code
 # Plot the smoothed components - no trend!
 plot(fit)
 ```
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
 
 
 ets(): Munich weather data, 1997-2015
@@ -592,13 +833,17 @@ class:small-code
 plot(forecast(fit, h=36))
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 
 ARIMA
 ========================================================
 class:small-code
 
 &nbsp;
-  
 - *__AR(p)__*:  
 autoregressive: $$y_{t} = c + \phi_{1}y_{t-1} + \phi_{2}y_{t-2} + \dots + \phi_{p}y_{t-p} + e_{t}$$
 - *__I(d)__*:  
@@ -607,8 +852,12 @@ number of times differencing has to be applied to obtain a stationary series
 moving average: $$y_{t} = c + e_t + \theta_{1}e_{t-1} + \theta_{2}e_{t-2} + \dots + \theta_{q}e_{t-q}$$
 
 &nbsp;
+_Stationarity_: If a time series $y_{t}$ is stationary, then for all $s$, the distribution of ($y_{t}$,…, $y_{t+s}$) does not depend on $t$.
 
-_Stationarity: If a time series $y_{t}$ is stationary, then for all $s$, the distribution of ($y_{t}$,…, $y_{t+s}$) does not depend on $t$._
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 Stationarity: ACF and PACF
@@ -622,6 +871,11 @@ Berkeley Earth data, 1950-2013
 tsdisplay(ts_1950)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Stationarity: ACF and PACF
 ========================================================
 class:small-code
@@ -634,6 +888,11 @@ tsdisplay(ts_1997)
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Cyclostationary process
 ========================================================
 class:small-code
@@ -641,6 +900,11 @@ class:small-code
 &nbsp;
 
 Mean and variance are constant for seasonally corresponding measurements.  
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 How do we decide which p,d,q to use for ARIMA?
@@ -652,6 +916,11 @@ class:small-code
 Just use auto.arima().  
 (But see later.)
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 ARIMA: Berkeley Earth data, 1950-2013
 ========================================================
 class:small-code
@@ -662,6 +931,11 @@ class:small-code
 fit <- auto.arima(ts_1950)
 summary(fit)
 ```
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 ARIMA: Munich weather data, 1997-2015
@@ -676,6 +950,11 @@ summary(fit)
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 
 Let's get forecasting!
 ========================================================
@@ -686,6 +965,11 @@ class:small-code
 Wait. 
  
 ARIMA forecasts are based on the assumption that residuals are uncorrelated and normally distributed.
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 Residuals: Autocorrelation
@@ -703,6 +987,11 @@ acf <- acf(res, main='Autocorrelation of residuals')
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Allowing for more parameters: Berkeley Earth data, 1950-2013 
 ========================================================
 class:small-code
@@ -714,6 +1003,11 @@ fit <- auto.arima(ts_1950, max.order = 10, stepwise=FALSE)
 summary(fit)
 ```
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Forecast: Berkeley Earth data, 1950-2013 
 ========================================================
 class:small-code
@@ -724,6 +1018,11 @@ class:small-code
 plot(forecast(fit,h=36),include=80)
 ```
 
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 Allowing for more parameters: Munich weather data, 1997-2015 
@@ -738,6 +1037,11 @@ summary(fit)
 ```
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Forecast: Munich weather data, 1997-2015 
 ========================================================
 class:small-code
@@ -747,6 +1051,11 @@ class:small-code
 ```{r, fig.width=18, fig.height=5, fig.show='hold', fig.align='center'}
 plot(forecast(fit,h=36),include=80)
 ```
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 Oops
@@ -763,6 +1072,11 @@ What happened?
 - larger uncertainty intervals with ARIMA than with ETS
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Beyond the weather ...
 ========================================================
 class:small-code
@@ -772,6 +1086,11 @@ class:small-code
 - Forecasting is required (and done!) everywhere
 - R gives you all the tools you need
 - you need to know what you're doing though!
+
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
 
 
 Data Science
@@ -785,6 +1104,11 @@ class:small-code
 It needs (a bit of) science get to the insights!
 
 
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
+
 Let's start doing some data science
 ========================================================
 class:small-code
@@ -792,3 +1116,8 @@ class:small-code
 &nbsp;
 
 Thank you!
+
+<div class="footer">
+<img src='cube3.png' border=0 width='122px'>
+</div>
+
