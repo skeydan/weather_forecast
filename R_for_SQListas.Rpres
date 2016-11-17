@@ -469,7 +469,7 @@ _Top 3 coldest days in Munich in 2016._
 </div>
 
 
-Window functions
+Window functions (3)
 ========================================================
 class:small-code
 
@@ -1069,7 +1069,7 @@ What happened?
 - ARIMA has problems with too few data points
 - ARIMA works better with the longer series
 - while ETS handles the shorter series better
-- larger uncertainty intervals with ARIMA than with ETS
+- uncertainty intervals are larger with ARIMA than with ETS
 
 
 <div class="footer">
@@ -1101,7 +1101,7 @@ class:small-code
 
 ... is about more than just having data.
 
-It needs (a bit of) science get to the insights!
+It needs (a bit of) science to get to the insights!
 
 
 <div class="footer">
@@ -1109,7 +1109,7 @@ It needs (a bit of) science get to the insights!
 </div>
 
 
-Let's start doing some data science
+At Trivadis, we'd love to help you with this
 ========================================================
 class:small-code
 
